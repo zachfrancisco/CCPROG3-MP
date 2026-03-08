@@ -38,17 +38,17 @@ public class Reservation {
      */
     public double calculateTotalDateRate() {
         double total = 0;
-        if(!freeday){
-            for(int i = checkIn; i < checkOut; i++) {
-                double oneDayCost = room.getPrice() * hotel.getDateRate(i);
-                total += oneDayCost;
-            }
-        }else
-        {
-            for(int i = checkIn+1; i < checkOut; i++) {
-                double oneDayCost = room.getPrice() * hotel.getDateRate(i);
-                total += oneDayCost;
-            }
+    
+        int startDay;
+
+        if (freeday == true) {
+            startDay = checkIn + 1;
+        } else {
+            startDay = checkIn;
+        }
+
+        for (int i = startDay; i < checkOut; i++) {
+            total += room.getPrice() * hotel.getDateRate(i);
         }
         return total;
     }
