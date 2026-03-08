@@ -105,7 +105,7 @@ public class HRSModel {
         if (hotel == null) {
             return false;
         }
-        Room room = hotel.findRoom(roomName);
+        RoomInterface room = hotel.findRoom(roomName);
         if (room == null) {
             return false;
         }
@@ -122,7 +122,7 @@ public class HRSModel {
     public boolean addReservation(Reservation reservation)
     {
         Hotel hotel = reservation.getHotel();
-        Room room = reservation.getRoom();
+        RoomInterface room = reservation.getRoom();
         if (!room.isAvailable(reservation.getCheckIn(), reservation.getCheckOut())) {
             return false;
         }

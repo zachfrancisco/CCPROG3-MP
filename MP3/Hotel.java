@@ -10,7 +10,7 @@ public class Hotel {
     private String name;
     private double[] dateRate = new double[31];
     private double basePrice;
-    private ArrayList<Room> rooms = new ArrayList<>();
+    private ArrayList<RoomInterface> rooms = new ArrayList<>();
     private ArrayList<Reservation> reservations = new ArrayList<>();
 
     /**
@@ -25,13 +25,13 @@ public class Hotel {
             dateRate[i] = 1;
         }
         for(int i = 0; i < 5; i++){
-            rooms.add(new Room("Standard" + String.valueOf(i+1),1,this));
+            rooms.add(new StandardRoom("Standard" + (i+1), this));
         }
         for(int i = 0; i < 5; i++){
-            rooms.add(new Room("Deluxe" + String.valueOf(i+1),2,this));
+            rooms.add(new DeluxeRoom("Deluxe" + (i+1), this));
         }
         for(int i = 0; i < 5; i++){
-            rooms.add(new Room("Executive" + String.valueOf(i+1),3,this));
+            rooms.add(new LuxuryRoom("Luxury" + (i+1), this));
         }
     }
 
@@ -80,7 +80,7 @@ public class Hotel {
      * @return true if the name is available, false otherwise
      */
     public boolean isRoomNameAvailable(String name) {
-        for (Room r : rooms) {
+        for (RoomInterface r : rooms) {
             if (r.getName().equals(name)) {
                 return false;
             }
@@ -114,7 +114,7 @@ public class Hotel {
      * Returns the rooms of the hotel
      * @return
      */
-    public ArrayList<Room> getRooms() {
+    public ArrayList<RoomInterface> getRooms() {
         return rooms;
     }
 
@@ -130,7 +130,12 @@ public class Hotel {
         if (!isRoomNameAvailable(name)) {
             return false;
         }
-        rooms.add(new Room(name, type, this));
+        switch (type) {
+            case 1 -> rooms.add(new StandardRoom(name, this));
+            case 2 -> rooms.add(new DeluxeRoom(name, this));
+            case 3 -> rooms.add(new LuxuryRoom(name, this));
+            default -> { return false; }
+        }
         return true;
     }
 
@@ -140,7 +145,7 @@ public class Hotel {
      * @return true if the room was removed, false otherwise
      */
     public boolean removeRoom(String name) {
-        for (Room r : rooms) {
+        for (RoomInterface r : rooms) {
             if (r.getName().equals(name)) {
                 if (!r.getReservations().isEmpty()) {
                     return false;
@@ -208,9 +213,9 @@ public class Hotel {
      * @param checkOut the check-out date
      * @return the available rooms of the hotel
      */
-    public ArrayList<Room> getAvailableRooms(int checkIn, int checkOut) {
-        ArrayList<Room> availableRooms = new ArrayList<>();
-        for (Room r : rooms) {
+    public ArrayList<RoomInterface> getAvailableRooms(int checkIn, int checkOut) {
+        ArrayList<RoomInterface> availableRooms = new ArrayList<>();
+        for (RoomInterface r : rooms) {
             boolean available = true;
             for (Reservation res : r.getReservations()) {
                 if (checkIn < res.getCheckOut() && checkOut > res.getCheckIn()) {
@@ -230,7 +235,7 @@ public class Hotel {
     public ArrayList<String> getAvailableRoomsStrings(int checkIn, int checkOut)
     {
         ArrayList<String> availableRooms = new ArrayList<>();
-        for (Room r : rooms) {
+        for (RoomInterface r : rooms) {
             boolean available = true;
             for (Reservation res : r.getReservations()) {
                 if (checkIn < res.getCheckOut() && checkOut > res.getCheckIn()) {
@@ -250,8 +255,8 @@ public class Hotel {
      * @param roomName
      * @return
      */
-    public Room findRoom(String roomName) {
-        for (Room r : rooms) {
+    public RoomInterface findRoom(String roomName) {
+        for (RoomInterface r : rooms) {
             if (r.getName().equals(roomName)) {
                 return r;
             }
@@ -275,7 +280,7 @@ public class Hotel {
 
     public ArrayList<String> getRoomNames() {
         ArrayList<String> names = new ArrayList<>();
-        for (Room r : rooms) {
+        for (RoomInterface r : rooms) {
             names.add(r.getName());
         }
         return names;

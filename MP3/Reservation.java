@@ -8,7 +8,7 @@ public class Reservation {
     private final String code;
     private String guestName;
     private Hotel hotel;
-    private Room room;
+    private RoomInterface room;
     private int checkIn;
     private int checkOut;
     private double discountRate;
@@ -22,7 +22,7 @@ public class Reservation {
      * @param checkIn
      * @param checkOut
      */
-    public Reservation(String guestName, Hotel hotel, Room room, int checkIn, int checkOut) {
+    public Reservation(String guestName, Hotel hotel, RoomInterface room, int checkIn, int checkOut) {
         this.freeday = false;
         this.guestName = guestName;
         this.code = "RS" + hotel.getReservations().size();
@@ -36,7 +36,7 @@ public class Reservation {
      * Returns the total cost of the reservation
      * @return
      */
-    public double calculateTotalDateRate(Hotel hotel) {
+    public double calculateTotalDateRate() {
         double total = 0;
         if(!freeday){
             for(int i = checkIn; i < checkOut; i++) {
@@ -54,7 +54,7 @@ public class Reservation {
     }
 
     public double calculateTotal() {
-        return calculateTotalDateRate(hotel) * (1 - discountRate);
+        return calculateTotalDateRate() * (1 - discountRate);
     }
 
 
@@ -93,7 +93,7 @@ public class Reservation {
      * Returns the hotel of the reservation
      * @return
      */
-    public MP3.Hotel getHotel() {
+    public Hotel getHotel() {
         return hotel;
     }
 
@@ -109,7 +109,7 @@ public class Reservation {
      * Returns the room of the reservation
      * @return
      */
-    public Room getRoom() {
+    public RoomInterface getRoom() {
         return room;
     }
 
@@ -117,7 +117,7 @@ public class Reservation {
      * Sets the room of the reservation
      * @param room
      */
-    public void setRoom(Room room) {
+    public void setRoom(RoomInterface room) {
         this.room = room;
     }
 
