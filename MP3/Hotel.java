@@ -5,7 +5,7 @@ package MP3;
  *
  */
 import java.util.*;
- 
+
 public class Hotel {
     private String name;
     private double[] dateRate = new double[31];
@@ -15,28 +15,30 @@ public class Hotel {
 
     /**
      * Constructor for the Hotel class
+     * 
      * @param name the name of the hotel
      */
-    
-    public Hotel(String name){
+
+    public Hotel(String name) {
         this.name = name;
         this.basePrice = 1299.0;
-        for(int i = 0; i < 31; i++){
+        for (int i = 0; i < 31; i++) {
             dateRate[i] = 1;
         }
-        for(int i = 0; i < 5; i++){
-            rooms.add(new StandardRoom("Standard" + (i+1), this));
+        for (int i = 0; i < 5; i++) {
+            this.rooms.add(RoomFactory.createRoom("Standard", "Standard" + (i + 1), this));
         }
-        for(int i = 0; i < 5; i++){
-            rooms.add(new DeluxeRoom("Deluxe" + (i+1), this));
+        for (int i = 0; i < 5; i++) {
+            this.rooms.add(RoomFactory.createRoom("Deluxe", "Deluxe" + (i + 1), this));
         }
-        for(int i = 0; i < 5; i++){
-            rooms.add(new LuxuryRoom("Luxury" + (i+1), this));
+        for (int i = 0; i < 5; i++) {
+            this.rooms.add(RoomFactory.createRoom("Luxury", "Luxury" + (i + 1), this));
         }
     }
 
     /**
      * Returns the price of the room
+     * 
      * @return the price of the room
      */
     public double getPrice() {
@@ -45,6 +47,7 @@ public class Hotel {
 
     /**
      * Sets the price of the room
+     * 
      * @param price the new price of the room
      * @return true if the price was successfully set, false otherwise
      */
@@ -56,26 +59,27 @@ public class Hotel {
         return true;
     }
 
-    public double getDateRate(int date){
-        return dateRate[date-1];
-    }   
-
-    public void setDateRate(int date, double rate){
-        dateRate[date-1] = rate;
+    public double getDateRate(int date) {
+        return dateRate[date - 1];
     }
 
-    public void setDateRateRange(int start, int end, double rate){
-        for(int i = start; i <= end; i++){
-            dateRate[i-1] = rate;
+    public void setDateRate(int date, double rate) {
+        dateRate[date - 1] = rate;
+    }
+
+    public void setDateRateRange(int start, int end, double rate) {
+        for (int i = start; i <= end; i++) {
+            dateRate[i - 1] = rate;
         }
     }
 
-    public double[] getDateRateList(){
+    public double[] getDateRateList() {
         return dateRate;
     }
 
     /**
      * Checks if the room name is available
+     * 
      * @param name the name to check
      * @return true if the name is available, false otherwise
      */
@@ -90,6 +94,7 @@ public class Hotel {
 
     /**
      * Returns the name of the hotel
+     * 
      * @return
      */
     public String getName() {
@@ -98,7 +103,8 @@ public class Hotel {
 
     /**
      * Sets the name of the hotel
-     * @param name the new name of the hotel
+     * 
+     * @param name       the new name of the hotel
      * @param HotelModel the list of hotels
      * @return true if the name was successfully set, false otherwise
      */
@@ -112,6 +118,7 @@ public class Hotel {
 
     /**
      * Returns the rooms of the hotel
+     * 
      * @return
      */
     public ArrayList<RoomInterface> getRooms() {
@@ -120,6 +127,7 @@ public class Hotel {
 
     /**
      * Adds a room to the hotel
+     * 
      * @param name the name of the room to add
      * @return true if the room was added, false otherwise
      */
@@ -130,17 +138,24 @@ public class Hotel {
         if (!isRoomNameAvailable(name)) {
             return false;
         }
-        switch (type) {
-            case 1 -> rooms.add(new StandardRoom(name, this));
-            case 2 -> rooms.add(new DeluxeRoom(name, this));
-            case 3 -> rooms.add(new LuxuryRoom(name, this));
-            default -> { return false; }
+
+        String typeRoom = switch (type) {
+            case 1 -> "Standard";
+            case 2 -> "Deluxe";
+            case 3 -> "Luxury";
+            default -> null;
+        };
+
+        if (typeRoom != null) {
+            rooms.add(RoomFactory.createRoom(typeRoom, name, this));
+            return true;
         }
-        return true;
+        return false;
     }
 
     /**
      * Removes a room from the hotel
+     * 
      * @param name the name of the room to remove
      * @return true if the room was removed, false otherwise
      */
@@ -161,7 +176,6 @@ public class Hotel {
         return reservations;
     }
 
-
     public ArrayList<String> getReservationCodes() {
         ArrayList<String> codes = new ArrayList<>();
         for (Reservation r : reservations) {
@@ -172,6 +186,7 @@ public class Hotel {
 
     /**
      * Adds a reservation to the hotel
+     * 
      * @param r the reservation to add
      * @return true if the reservation was added, false otherwise
      */
@@ -182,6 +197,7 @@ public class Hotel {
 
     /**
      * Removes a reservation from the hotel
+     * 
      * @param code the code of the reservation to remove
      * @return true if the reservation was removed, false otherwise
      */
@@ -197,6 +213,7 @@ public class Hotel {
 
     /**
      * Returns the estimated earnings of the hotel
+     * 
      * @return the estimated earnings of the hotel
      */
     public double getEarnings() {
@@ -209,7 +226,8 @@ public class Hotel {
 
     /**
      * Returns the available rooms of the hotel
-     * @param checkIn the check-in date
+     * 
+     * @param checkIn  the check-in date
      * @param checkOut the check-out date
      * @return the available rooms of the hotel
      */
@@ -230,10 +248,7 @@ public class Hotel {
         return availableRooms;
     }
 
-
-
-    public ArrayList<String> getAvailableRoomsStrings(int checkIn, int checkOut)
-    {
+    public ArrayList<String> getAvailableRoomsStrings(int checkIn, int checkOut) {
         ArrayList<String> availableRooms = new ArrayList<>();
         for (RoomInterface r : rooms) {
             boolean available = true;
@@ -252,6 +267,7 @@ public class Hotel {
 
     /**
      * Finds a room by name
+     * 
      * @param roomName
      * @return
      */
@@ -266,6 +282,7 @@ public class Hotel {
 
     /**
      * Finds a reservation by code
+     * 
      * @param code
      * @return
      */
@@ -285,6 +302,5 @@ public class Hotel {
         }
         return names;
     }
-
 
 }
